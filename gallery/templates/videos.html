@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="{{
+  url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
+
+<script>$(document).ready(function(){
+    $(".fancybox").fancybox({
+        openEffect: "none",
+        closeEffect: "none"
+    });
+});
+    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        function myImgFunction(img_name) {
+                $.getJSON($SCRIPT_ROOT + '/check_selected', {
+                <!--x : $('input[name="value"]').val(),-->
+                x : $( "input[type=radio][name=options]:checked" ).val(),
+                <!--x = element.parentNode.elements["options"].values-->
+                post: img_name
+                }, function(data){
+                console.log("Working");
+            });
+        }
+
+        function myOptionFunction(element,img_name){
+
+        console.log(element.parentNode.elements["options"].value);
+        <!--var x = element.parentNode.parentNode.parentNode.children;-->
+        <!--var y = document.getElementById('img_container');-->
+        <!--var myimg = y.getElementsByTagName('img')[0];-->
+        <!--var mysrc = myimg.src;-->
+
+        console.log(img_name);
+        <!--console.log(x);-->
+        }
+    </script>
+</head>
+    <body>
+    <style>
+    .item {
+            float:left;
+            width:300px;
+            height:300px;
+            margin:50px;
+        }
+.clrd-font{
+	background: #42dcf4;
+	background: -webkit-linear-gradient(to right, #F09819, #FF512F);
+	background: linear-gradient(to right, #F09819, #FF512F);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+.btn-primary {
+    display:block;
+	background-color:transparent;
+	color: #fff;
+	border: 2px solid #fff;
+	font-size:20px;
+	text-transform: uppercase;
+	border-radius: 0px;
+}
+.btn-primary:hover {
+	background-color:transparent;
+	border-color: #d6962c;
+	color: #d6962c;
+	border-radius: 20px;
+}
+
+.single_portfolio_text{
+	display:inline-block;
+	padding:0;
+	position:relative;
+	overflow:hidden;
+}
+.single_portfolio_text img{
+	width:100%;
+}
+
+.single_portfolio_text:hover .portfolio_images_overlay{
+	top:5%;
+	left: 5%;
+}
+
+.portfolio_images_overlay{
+	width: 90%;
+	height: 90%;
+	background: rgba(0, 0, 0, 0.8);
+	opacity:0.65;
+	padding: 20px;
+	margin: 0 auto;
+	top: -100%;
+	left: 5%;
+	position: absolute;
+	transition:.6s;
+
+}
+.portfolio_images_overlay h6{
+	text-transform: uppercase;
+	color: #fff;
+	font-size: 30px;
+	font-weight: 900;
+	border: 2px solid #fff;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.portfolio_images_overlay .product_price{
+	font-size: 35px;
+	color: #fff;
+	font-weight:800;
+	line-height:30px;
+}
+.portfolio_images_overlay .product_price i{
+    margin-right: -10px;
+}
+.zoom{
+	width: 200px;
+    height: 200px;
+    position: absolute;
+    bottom: -100px;
+    right: -100px;
+    border-radius: 50%;
+
+	background: #FF512F;
+	background: -webkit-linear-gradient(to right, #F09819, #FF512F);
+	background: linear-gradient(to right, #F09819, #FF512F);
+    box-shadow:0px 0px 0px 10px rgba(0,0,0,0.5);
+	opacity:0.9;
+}
+.zoom:before {
+	content: "\f00e";
+    font-family: FontAwesome;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 70px;
+    padding-right: 20px;
+    position: absolute;
+    top: 10px;
+    left: 30px;
+}
+@media (min-width:769px) and (max-width:991px) {
+	.portfolio_images_overlay {
+		padding: 0px;
+	}
+}
+@media (max-width:768px) {
+	.portfolio_images_overlay{
+		padding: 170px 20px;
+	}
+}
+@media (max-width:580px) {
+	.portfolio_images_overlay{
+		padding: 100px 20px;
+	}
+}
+@media (max-width:480px) {
+	.portfolio_images_overlay{
+		padding: 40px 20px;
+	}
+}
+@media (max-width:320px) {
+	.portfolio_images_overlay{
+		padding: 20px;
+	}
+}
+
+        /* Customize the label (the container) */
+.contain {
+  display: block;
+  position: relative;
+  padding-left: 30px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 20px;
+  color:white;
+  float:left;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.contain input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.contain:hover input ~ .checkmark {
+  background-color: #aaa;
+}
+
+/* When the checkbox is checked, add a blue background */
+.contain input:checked ~ .checkmark {
+  background-color: #2196F3;
+  display:block;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.contain input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.contain .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.next {
+  float: right;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  background-color: green;
+  color: white;
+}
+
+.logout {
+  float: left;
+  margin-left: 10px;
+  background-color: red;
+  color: white;
+}
+
+</style>
+       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css"/>
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+	<link rel="stylesheet" href="css/style.css">
+	<div class="container-fluid">
+
+		<div class="row">
+            {% for video in videos %}
+
+            <div id="img_container" class="col-md-3 col-sm-4 col-xs-12 single_portfolio_text">
+                    <video class="item" name="video" controls autoplay>
+                        <source src="{{ url_for('static', filename=['gallery', video.filename ]|join('/')) }}">
+                    </video>
+                    <div class="portfolio_images_overlay text-center">
+
+                        <h5 class="clrd-font">VIOLATION TYPE</h5>
+                        <form name="myForm" action="" method="post" onsubmit="">
+                        <label class="contain">No violation
+                            <input type="radio" name="options" id="{{video.filename}}" value="1">
+                          <span class="checkmark"></span>
+                        </label>
+
+                        <label class="contain" >Wrong Parking
+                            <input type="radio" name="options" id="{{video.filename}}" value="2">
+                          <span class="checkmark"></span>
+                        </label>
+
+                        <label class="contain" >Blocked Parking
+                            <input type="radio" name="options" id="{{video.filename}}" value="3">
+                          <span class="checkmark"></span>
+                        </label>
+
+                        <label class="contain">Merging from wrong lane
+                            <input type="radio" name="options" id="{{video.filename}}" value="4">
+                          <span class="checkmark"></span>
+                        </label>
+
+                        <label class="contain">Driving over median
+                            <input type="radio" name="options" id="{{video.filename}}" value="5">
+                          <span class="checkmark"></span>
+                        </label>
+                        <label class="contain">Others
+                            <input type="radio" name="options" id="{{video.filename}}" value="6">
+                          <span class="checkmark"></span>
+                        </label>
+                        <button  onclick='myImgFunction("{{video.filename}}")' type="submit" class="btn btn-default">Go</button>
+
+</form>
+                    </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+    <a href="{{ url_for('logout') }}" class="logout">&laquo; LOGOUT </a>
+    <a href="#" class="next">NEXT &raquo;</a>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+	<script src="js/script.js"></script>
+    </body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Gallery</title>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    </head>
+    <body>
+        <style>
+        /* The grid: Four equal columns that floats next to each other */
+        .column {
+          float: left;
+          width: 25%;
+          padding: 10px;
+        }
+        /* Style the images inside the grid */
+        .column img {
+          opacity: 1.0;
+          cursor: pointer;
+        }
+        /* Clear floats after the columns */
+        .row:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+        .item {
+            size:a5;
+            float:left;
+            width:400px;
+            margin:50px;
+        }
+        /* Customize the label (the container) */
+.contain {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 12px;
+  float:left;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.contain input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.contain:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.contain input:checked ~ .checkmark {
+  background-color: #2196F3;
+  display:block;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.contain input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.contain .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.dropbtn {
+  display: block;
+  position: relative;
+  padding-right: 10px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 12px;
+  float: left;
+  background-color: #4CAF50;
+  color: white;
+  padding: 6px;
+  border: none;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {background-color: #ddd;}
+
+.dropdown:hover .dropdown-content {display: block;}
+
+.dropdown:hover .dropbtn {background-color: #3e8e41;}
+.checkbox { position: relative; bottom: 0px; right: 0px; float: left;}
+</style>
+        <script type="text/javascript" src="{{ url_for('gallery.static', filename='jquery.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('gallery.static', filename='jquery.masonry.min.js') }}"></script>
+        <div class="row">
+        <ul id="container">
+            {% for image in images %}
+                <div class="column">
+
+                <img class="item" alt=image.filename src="{{ url_for('static', filename=['gallery', image.filename ]|join('/')) }}"/>
+                <!--
+                <div class="dropdown">
+                <button class="dropbtn">ViolationType</button>
+
+              <div class="dropdown-content" name="violation">
+                <a value="0">Unknown</a>
+                <a value="1">Wrong Parking</a>
+                <a value="2">Blocked Parking</a>
+                <a value="3">Merging from wrong lane</a>
+                <a value="4" >Driving over median</a>
+              </div>
+                -->
+                <form class="form-inline" method="POST">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon">Violation Type</span>
+                            <select name="comp_select" class="selectpicker form-control">
+                            <option value="0">Unknown</option>
+                            <option value="1">Wrong Parking</option>
+                            <option value="2">Blocked Parking</option>
+                            <option value="3">Merging from wrong lane</option>
+                            <option value="4" >Driving over median</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-default">Submit</button>
+                    </div>
+                </form>
+                <!--
+                <label class="contain" name="ptype">Wrong Parking
+                  <input type="radio" name={{image.filename}}>
+                  <span class="checkmark"></span>
+                </label>
+
+                <label class="contain" name="ptype">Blocked Parking
+                  <input type="radio" name={{image.filename}}>
+                  <span class="checkmark"></span>
+                </label>
+
+                <label class="contain" name="ptype">Merging from wrong lane
+                  <input type="radio" name={{image.filename}}>
+                  <span class="checkmark"></span>
+                </label>
+
+                <label class="contain" name="ptype">Driving over median
+                  <input type="radio" name={{image.filename}}>
+                  <span class="checkmark"></span>
+                </label>
+                -->
+            </div>
+            {% endfor %}
+        </ul></div>
+    </body>
+</html>
