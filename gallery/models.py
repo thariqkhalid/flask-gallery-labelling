@@ -28,6 +28,7 @@ class FilesystemObject(object):
         self.root_dir = root
         self.filename = filename if not post else secure_filename(post.filename)
         self.abspath  = os.path.join(self.root_dir, filename)
+        # self.abspath = self.filename
 
         if post:
             self.upload(post)
@@ -44,6 +45,7 @@ class FilesystemObject(object):
         # TODO: handle filename conflicts
         # http://flask.pocoo.org/docs/patterns/fileuploads/
         post.save(os.path.join(self.root_dir, self.filename))
+        # post.save(self.filename)
 
     @classmethod
     def all(cls, user_id):

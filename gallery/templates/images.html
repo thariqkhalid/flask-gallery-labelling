@@ -264,7 +264,7 @@
             {% for image in images %}
 
             <div id="img_container" class="col-md-3 col-sm-4 col-xs-12 single_portfolio_text">
-                    <img class="item" name="image" src="{{ url_for('static', filename=['gallery', image.filename ]|join('/')) }}"/>
+                    <img class="item" name="image" src="{{ url_for('static', filename=['gallery',image.filename ]|join('/')) }}"/>
                     <div class="portfolio_images_overlay text-center">
 
                         <h5 class="clrd-font">VIOLATION TYPE</h5>

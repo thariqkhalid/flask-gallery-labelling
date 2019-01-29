@@ -11,6 +11,7 @@ GALLERY_PATH = 'static/gallery/'
 engine = db.create_engine('sqlite:///trafficlabelling.db')
 
 def create_gallery_files(gallery_path):
+
     glry_files = os.listdir(gallery_path)
     GALLERY_FILES = [os.path.join(gallery_path, i) for i in glry_files]
 
@@ -30,9 +31,9 @@ def create_gallery_files(gallery_path):
     return final_gallery_files
 
 
-def insert_data_db():
+def insert_data_db(gallery_path):
     connection, traffic = get_connection()
-    gallery_files = create_gallery_files()
+    gallery_files = create_gallery_files(gallery_path)
     custom_dict = [{'filename': value} for value in gallery_files]
     connection.execute(traffic.insert(), custom_dict)
     return 1
