@@ -4,7 +4,7 @@ from sqlalchemy import Column, Date, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 
-engine = create_engine('sqlite:////Users/thariq/galleries/flask-simple-image-gallery/trafficlabelling.db', echo=True)
+engine = create_engine('sqlite:///trafficlabelling.db', echo=True)
 Base = declarative_base()
 
 

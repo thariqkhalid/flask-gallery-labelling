@@ -15,3 +15,5 @@ def show_gallery():
         return render_template('images.html', images=images)
     elif videos:
         return render_template('videos.html', videos=videos)
+    else:
+        return "Thank you!! You have completed the labeling succesfully"

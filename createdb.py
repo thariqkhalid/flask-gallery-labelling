@@ -4,14 +4,30 @@ import os, sys
 from sqlalchemy.sql import select
 from sqlalchemy.orm import sessionmaker
 import re
+from classify_nsfw import predict_nsfw
+import argparse
 
-GALLERY_PATH = '/Users/thariq/galleries/flask-simple-image-gallery/static/gallery/'
-engine = db.create_engine('sqlite:////Users/thariq/galleries/flask-simple-image-gallery/trafficlabelling.db')
+GALLERY_PATH = 'static/gallery/'
+engine = db.create_engine('sqlite:///trafficlabelling.db')
 
-def create_gallery_files():
-    glry_files = os.listdir(GALLERY_PATH)
-    #GALLERY_FILES = [os.path.join(GALLERY_PATH,i) for i in glry_files]
-    return glry_files
+def create_gallery_files(gallery_path):
+    glry_files = os.listdir(gallery_path)
+    GALLERY_FILES = [os.path.join(gallery_path, i) for i in glry_files]
+
+    print("Checking for Obscene content............")
+    final_gallery_files = []
+    for i,image_path in enumerate(GALLERY_FILES):
+        print("predicting nsfw for image {}".format(image_path))
+        ext = image_path.split(".")[-1]
+        print("extension {}".format(ext))
+        if ext != "mp4":
+            res = predict_nsfw(image_path)
+            if res == "sfw":
+                final_gallery_files.append(glry_files[i])
+        else:
+            final_gallery_files.append(glry_files[i])
+
+    return final_gallery_files
 
 
 def insert_data_db():
@@ -120,6 +136,10 @@ def check_user_details_db(post_username, post_password):
 
 
 if __name__ == "__main__":
-    res = insert_data_db()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--gallery_path", help="path to the images and videos", type=str)
+    args = parser.parse_args()
+
+    res = insert_data_db(args.gallery_path)
     if res == 1:
         print("Successfully created the database and inserted the files into table Traffic")

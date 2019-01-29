@@ -15,7 +15,7 @@ class FilesystemObjectDoesNotExist(Exception):
     pass
 
 class FilesystemObject(object):
-    def __init__(self, filename, post=None, root='/Users/thariq/galleries/flask-simple-image-gallery/static/gallery/'):
+    def __init__(self, filename, post=None, root='static/gallery/'):
         """Create an object from the information of the given filename or from a
         uploaded file.
 
@@ -50,6 +50,7 @@ class FilesystemObject(object):
         """Return a list of files contained in the directory pointed by settings.GALLERY_ROOT_DIR.
         """
         images_list, videos_list = get_image_filepaths(user_id)
+        print(images_list, videos_list)
         images = [cls(x) for x in images_list]
         videos = [cls(x) for x in videos_list]
         return images, videos

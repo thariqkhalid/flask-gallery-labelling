@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from create_users_db import *
 
-engine = create_engine('sqlite:////Users/thariq/galleries/flask-simple-image-gallery/trafficlabelling.db', echo=True)
+engine = create_engine('sqlite:///trafficlabelling.db', echo=True)
 
 # create a Session
 Session = sessionmaker(bind=engine)
