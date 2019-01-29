@@ -7,3 +7,9 @@ Create a new virtual environment with
 Install the requirements file
 
   `pip install -r requirements.txt`
+
+Steps for setting up the Database
+1. Run `python createdb.py --gallery_path <path to the images and videos files>`
+2. Run `python create_users_db.py`
+3. Run `python app.py`
+4. Go to http://localhost:8000 and login with the username and password
