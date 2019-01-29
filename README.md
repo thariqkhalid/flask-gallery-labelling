@@ -12,7 +12,7 @@ Steps for setting up the Database
 1. Run `python createdb.py --gallery_path "static/gallery/" `
 
 Currently copy all the sample images & videos to static/gallery folder
-TODO: Handling any absolute given path
+TODO: Handling any given absolute path
 
 
 2. Run `python create_users_db.py`
