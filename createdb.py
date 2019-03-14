@@ -6,6 +6,9 @@ from sqlalchemy.orm import sessionmaker
 import re
 from classify_nsfw import predict_nsfw
 import argparse
+from skimage import io
+from skimage import color
+import numpy as np
 
 GALLERY_PATH = 'static/gallery/'
 engine = db.create_engine('sqlite:///trafficlabelling.db')
@@ -18,17 +21,76 @@ def create_gallery_files(gallery_path):
     print("Checking for Obscene content............")
     final_gallery_files = []
     for i,image_path in enumerate(GALLERY_FILES):
-        print("predicting nsfw for image {}".format(image_path))
+
         ext = image_path.split(".")[-1]
         print("extension {}".format(ext))
         if ext != "mp4":
+            print("predicting nsfw for image {}".format(image_path))
             res = predict_nsfw(image_path)
             if res == "sfw":
-                final_gallery_files.append(glry_files[i])
+                screen_res = detect_screenshot_phone(image_path)
+                if screen_res:
+                    final_gallery_files.append(glry_files[i])
+
         else:
             final_gallery_files.append(glry_files[i])
 
     return final_gallery_files
+
+
+def detect_screenshot_phone(image_path):
+    # Find out the min and max of the peaks and find the longest stretch of horizontal line.
+    # It should be in the middle
+
+    img_rgb = io.imread(image_path)
+    img_gray = color.rgb2gray(img_rgb)
+    grayvsum = np.cumsum(img_gray, axis=0)
+    gray_cumsum_v = grayvsum[50, :]
+    gray_cumsum_v = gray_cumsum_v.tolist()
+
+    l = len(gray_cumsum_v)
+    print("length of the image:", l)
+    mid = int(l / 2)
+    total_range = 0
+
+    average = int(np.mean(gray_cumsum_v))
+    range_values = gray_cumsum_v[200:300]
+    min_range = np.min(range_values)
+    max_range = np.max(range_values)
+
+    print("min range: ", min_range)
+    print("max range:", max_range)
+
+    print("average_range: ",average)
+
+    print(gray_cumsum_v[mid])
+    if gray_cumsum_v[mid] == average:
+        print("not a screenshot")
+        return 1
+    
+    if (min_range + 2) < max_range:
+        print("not a screenshot")
+        return 1
+
+
+    if l < 300:
+        return 1
+
+    for i in range(200, 300):
+        total_range = total_range + gray_cumsum_v[i]
+
+    average = int(total_range / 100)
+    mid_range = int(gray_cumsum_v[250])
+
+    print("average:", average)
+    print("mid_range:", mid_range)
+
+    if average == mid_range:
+        print("screenshot detected")
+        return 0
+    else:
+        print("not a screenshot")
+        return 1
 
 
 def insert_data_db(gallery_path):
