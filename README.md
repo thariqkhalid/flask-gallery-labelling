@@ -1,18 +1,17 @@
 # flask-gallery-labelling
 
-Create a new virtual environment with 
+**Create a new virtual environment with**
 
   `conda create -n flaskdb`
   
-Install the requirements file
+**Install the requirements file**
 
   `pip install -r requirements.txt`
 
-Steps for setting up the Database
+**Steps** for setting up the Database
 1. Run `python createdb.py --gallery_path "static/gallery/" `
 
-Currently copy all the sample images & videos to static/gallery folder
-TODO: Handling any given absolute path
+Copy all the images & videos to static/gallery folder
 
 
 2. Run `python create_users_db.py`
