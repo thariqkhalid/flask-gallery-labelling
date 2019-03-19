@@ -1,46 +1,71 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <meta http-equiv="refresh" content="5">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="{{
+    <!--<script>window.jQuery || document.write('-->
+    <script src="{{
   url_for('static', filename='jquery.js') }}">\x3C/script>')</script>
 
-<script>$(document).ready(function(){
+    <script>$(document).ready(function(){
     $(".fancybox").fancybox({
-        openEffect: "none",
-        closeEffect: "none"
+    openEffect: "none",
+    closeEffect: "none"
     });
-});
+    });
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-        function myImgFunction(img_name) {
-                $.getJSON($SCRIPT_ROOT + '/check_selected', {
-                <!--x : $('input[name="value"]').val(),-->
-                x : $( "input[type=radio][name=options]:checked" ).val(),
-                <!--x = element.parentNode.elements["options"].values-->
-                post: img_name
-                }, function(data){
-                console.log("Working");
-            });
-        }
+    function myOptionFunction(img_name) {
+    $.getJSON($SCRIPT_ROOT + '/check_selected', {
+    x : $( "input[type=radio][name=options]:checked" ).val(),
+    <!--x : $(event.target.id),-->
+    post: img_name
+    <!--post : $(event.target.value)-->
+    }, function(data){
+    console.log("Working");
+    location.reload();
+    });
+    }
 
-        function myOptionFunction(element,img_name){
+    <!--testFunction() {-->
+    <!--console.log('test');-->
+    <!--alert("test"); }-->
+    <!--function myOptionFunction(){-->
 
-        console.log(element.parentNode.elements["options"].value);
-        <!--var x = element.parentNode.parentNode.parentNode.children;-->
-        <!--var y = document.getElementById('img_container');-->
-        <!--var myimg = y.getElementsByTagName('img')[0];-->
-        <!--var mysrc = myimg.src;-->
 
-        console.log(img_name);
-        <!--console.log(x);-->
-        }
+
+    <!--$.getJSON($SCRIPT_ROOT + '/check_selected', {-->
+    <!--&lt;!&ndash;x : $('input[name="value"]').val(),&ndash;&gt;-->
+    <!--x : event.target.value,-->
+    <!--&lt;!&ndash;x = element.parentNode.elements["options"].values&ndash;&gt;-->
+    <!--post: event.target.id-->
+    <!--}, function(data){-->
+    <!--console.log("Working");-->
+
+    <!--}-->
+    <!--}-->
+    <!--console.log(event.target.id);-->
+
+    <!--console.log(event.target.value);-->
+
+
+    <!--console.log(element.parentNode.elements["options"].value);-->
+    <!--var x = element.parentNode.parentNode.parentNode.children;-->
+    <!--var y = document.getElementById('img_container');-->
+    <!--var myimg = y.getElementsByTagName('img')[0];-->
+    <!--var mysrc = myimg.src;-->
+
+    <!--console.log(img_name);-->
+    <!--console.log(x);-->
+    <!--}-->
+
+
     </script>
 </head>
-    <body>
-    <style>
+<body>
+<style>
     .item {
             float:left;
             width:300px;
@@ -87,7 +112,7 @@
 
 .portfolio_images_overlay{
 	width: 90%;
-	height: 90%;
+	height: 50%;
 	background: rgba(0, 0, 0, 0.8);
 	opacity:0.65;
 	padding: 20px;
@@ -254,82 +279,96 @@
   color: white;
 }
 
+
+
+
 </style>
-       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css"/>
-	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-	<link rel="stylesheet" href="css/style.css">
-	<div class="container-fluid">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css"/>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+      integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+<link rel="stylesheet" href="css/style.css">
+<div class="container-fluid">
 
-		<div class="row">
-            {% for image in images %}
+    <div class="row">
+        {% for image in images %}
 
-            <div id="img_container" class="col-md-3 col-sm-4 col-xs-12 single_portfolio_text">
-                    <img class="item" name="image" src="{{ url_for('static', filename=['gallery',image.filename ]|join('/')) }}"/>
-                    <div class="portfolio_images_overlay text-center">
+        <div id="img_container" class="col-md-3 col-sm-4 col-xs-12 single_portfolio_text">
+            <img class="item" name="image"
+                 src="{{ url_for('static', filename=['gallery',image.filename ]|join('/')) }}"/>
+            <div class="portfolio_images_overlay text-center">
 
-                        <h5 class="clrd-font">VIOLATION TYPE</h5>
-                        <form name="myForm" action="" method="post" onsubmit="">
-                        <label class="contain">No violation
-                            <input type="radio" name="options" id="{{image.filename}}" value="1">
-                          <span class="checkmark"></span>
-                        </label>
+                <h5 class="clrd-font">VIOLATION TYPE</h5>
+                <form name="myForm" action="" method="post" onsubmit="">
+                    <label class="contain">No violation
+                        <input type="radio" name="options" id="{{image.filename}}" value="1"
+                               onclick='myOptionFunction("{{image.filename}}")'>
+                        <span class="checkmark"></span>
+                    </label>
 
-                        <label class="contain" >Wrong Parking
-                            <input type="radio" name="options" id="{{image.filename}}" value="2">
-                          <span class="checkmark"></span>
-                        </label>
+                    <label class="contain">Wrong Parking
+                        <input type="radio" name="options" id="{{image.filename}}" value="2"
+                               onclick='myOptionFunction("{{image.filename}}")'>
+                        <span class="checkmark"></span>
+                    </label>
 
-                        <label class="contain" >Blocked Parking
-                            <input type="radio" name="options" id="{{image.filename}}" value="3">
-                          <span class="checkmark"></span>
-                        </label>
+                    <label class="contain">Blocked Parking
+                        <input type="radio" name="options" id="{{image.filename}}" value="3"
+                               onclick='myOptionFunction("{{image.filename}}")'>
+                        <span class="checkmark"></span>
+                    </label>
 
-                        <label class="contain">Merging from wrong lane
-                            <input type="radio" name="options" id="{{image.filename}}" value="4">
-                          <span class="checkmark"></span>
-                        </label>
+                    <label class="contain">Merging from wrong lane
+                        <input type="radio" name="options" id="{{image.filename}}" value="4"
+                               onclick='myOptionFunction("{{image.filename}}")'>
+                        <span class="checkmark"></span>
+                    </label>
 
-                        <label class="contain">Driving over median
-                            <input type="radio" name="options" id="{{image.filename}}" value="5">
-                          <span class="checkmark"></span>
-                        </label>
-                        <label class="contain">Others
-                            <input type="radio" name="options" id="{{image.filename}}" value="6">
-                          <span class="checkmark"></span>
-                        </label>
-                        <button  onclick='myImgFunction("{{image.filename}}")' onsubmit="myOptionFunction("{{image.filename}}")" type="submit" class="btn btn-default">Go</button>
+                    <label class="contain">Driving over median
+                        <input type="radio" name="options" id="{{image.filename}}" value="5"
+                               onclick='myOptionFunction("{{image.filename}}")'>
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="contain">Others
+                        <input type="radio" name="options" id="{{image.filename}}" value="6"
+                               onclick='myOptionFunction("{{image.filename}}")'>
+                        <span class="checkmark"></span>
+                    </label>
+                    <!--<button onclick='myImgFunction("{{image.filename}}")'-->
+                            <!--onsubmit='myOptionFunction("{{image.filename}}")' type="submit" class="btn btn-default">Go-->
+                    <!--</button>-->
 
-</form>
-                        <!--<form name="violation" class="form-inline" method="POST">-->
-                            <!--<div class="form-group">-->
-                                <!--<div class="input-group">-->
-                                    <!--<span class="input-group-addon">Violation Type</span>-->
-                                    <!--<select name="comp_select" class="selectpicker form-control">-->
-                                    <!--<option value="0">No Violation</option>-->
-                                    <!--<option value="1">Wrong Parking</option>-->
-                                    <!--<option value="2">Blocked Parking</option>-->
-                                    <!--<option value="3">Merging from wrong lane</option>-->
-                                    <!--<option value="4" >Driving over median</option>-->
-                                    <!--<option value="4" >Others</option>-->
-                                    <!--</select>-->
-                                <!--</div>-->
-                                <!--<button  onclick='myImgFunction("{{image.filename}}")' onsubmit="myOptionFunction()" type="submit" class="btn btn-default">Go</button>-->
-                            <!--</div>-->
-                        <!--</form>-->
-                    </div>
+                </form>
+                <!--<form name="violation" class="form-inline" method="POST">-->
+                <!--<div class="form-group">-->
+                <!--<div class="input-group">-->
+                <!--<span class="input-group-addon">Violation Type</span>-->
+                <!--<select name="comp_select" class="selectpicker form-control">-->
+                <!--<option value="0">No Violation</option>-->
+                <!--<option value="1">Wrong Parking</option>-->
+                <!--<option value="2">Blocked Parking</option>-->
+                <!--<option value="3">Merging from wrong lane</option>-->
+                <!--<option value="4" >Driving over median</option>-->
+                <!--<option value="4" >Others</option>-->
+                <!--</select>-->
+                <!--</div>-->
+                <!--<button  onclick='myImgFunction("{{image.filename}}")' onsubmit="myOptionFunction()" type="submit" class="btn btn-default">Go</button>-->
+                <!--</div>-->
+                <!--</form>-->
             </div>
-            {% else %}
-            <video class="item" name="image" src="{{ url_for('static', filename=['gallery', image.filename ]|join('/')) }}" controls autoplay>
-            {% endfor %}
         </div>
-
+        {% else %}
+        <video class="item" name="image" src="{{ url_for('static', filename=['gallery', image.filename ]|join('/')) }}"
+               controls autoplay>
+            {% endfor %}
     </div>
-    <a href="{{ url_for('logout') }}" class="logout">&laquo; LOGOUT </a>
-    <a href="#" class="next">NEXT &raquo;</a>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
-	<script src="js/script.js"></script>
-    </body>
+</div>
+<a href="{{ url_for('logout') }}" class="logout">&laquo; LOGOUT </a>
+<a href="#" class="next">NEXT &raquo;</a>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js"></script>
+<script src="js/script.js"></script>
+</body>
 </html>

@@ -4,11 +4,13 @@ import os, sys
 from sqlalchemy.sql import select
 from sqlalchemy.orm import sessionmaker
 import re
-from classify_nsfw import predict_nsfw
+from classify_nsfw import predict_nsfw, predict_nsfw_faster
 import argparse
 from skimage import io
 from skimage import color
 import numpy as np
+import cv2
+import shutil
 
 GALLERY_PATH = 'static/gallery/'
 engine = db.create_engine('sqlite:///trafficlabelling.db')
@@ -20,15 +22,32 @@ def create_gallery_files(gallery_path):
 
     print("Checking for Obscene content............")
     final_gallery_files = []
-    for i,image_path in enumerate(GALLERY_FILES):
+    for i, image_path in enumerate(GALLERY_FILES):
 
         ext = image_path.split(".")[-1]
         print("extension {}".format(ext))
+
         if ext != "mp4":
             print("predicting nsfw for image {}".format(image_path))
-            res = predict_nsfw(image_path)
+            res = predict_nsfw_faster(image_path)
             if res == "sfw":
                 screen_res = detect_screenshot_phone(image_path)
+                if screen_res:
+                    final_gallery_files.append(glry_files[i])
+            else:
+                image_name = image_path.split("/")[-1]
+                cwd = os.getcwd()
+                print("cwd =", cwd)
+                wd = os.path.join(cwd, "static/nsfw/")
+                image_name = os.path.join(wd, image_name)
+                print("image name for nsfw:", image_name)
+                shutil.copy(image_path, image_name)
+
+        elif ext == "mp4":
+            frame = detect_nsfw_video_frame(image_path)
+            res = predict_nsfw_faster(frame)
+            if res == "sfw":
+                screen_res = detect_screenshot_phone(frame)
                 if screen_res:
                     final_gallery_files.append(glry_files[i])
 
@@ -36,6 +55,17 @@ def create_gallery_files(gallery_path):
             final_gallery_files.append(glry_files[i])
 
     return final_gallery_files
+
+def detect_nsfw_video_frame(video_path):
+    capture = cv2.VideoCapture(video_path)
+    frame_count = capture.get(cv2.CAP_PROP_FRAME_COUNT)
+    capture.set(cv2.CAP_PROP_POS_FRAMES, np.random.randint(0, frame_count))
+    _, frame = capture.read()
+    fname = "static/video_frames/frame.jpg"
+    status = cv2.imwrite(fname, frame)
+
+    if status == True:
+        return fname
 
 
 def detect_screenshot_phone(image_path):
@@ -67,7 +97,7 @@ def detect_screenshot_phone(image_path):
     if gray_cumsum_v[mid] == average:
         print("not a screenshot")
         return 1
-    
+
     if (min_range + 2) < max_range:
         print("not a screenshot")
         return 1

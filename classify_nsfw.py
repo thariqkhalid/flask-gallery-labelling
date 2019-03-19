@@ -1,8 +1,56 @@
 import os, sys
 
 import tensorflow as tf
+from model import OpenNsfwModel, InputType
+from image_utils import create_tensorflow_image_loader
+from image_utils import create_yahoo_image_loader
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+IMAGE_LOADER_TENSORFLOW = "tensorflow"
+IMAGE_LOADER_YAHOO = "yahoo"
+
+
+def predict_nsfw_faster(image_path):
+
+    model = OpenNsfwModel()
+
+    with tf.Session() as sess:
+
+        itype = InputType.TENSOR.name.lower()
+        image_loader = IMAGE_LOADER_YAHOO
+
+        input_type = InputType[itype.upper()]
+        model.build(weights_path="open_nsfw-weights.npy", input_type=input_type)
+
+        fn_load_image = None
+
+        if input_type == InputType.TENSOR:
+            if image_loader == IMAGE_LOADER_TENSORFLOW:
+                fn_load_image = create_tensorflow_image_loader(tf.Session(graph=tf.Graph()))
+            else:
+                fn_load_image = create_yahoo_image_loader()
+        elif input_type == InputType.BASE64_JPEG:
+            import base64
+            fn_load_image = lambda filename: np.array([base64.urlsafe_b64encode(open(filename, "rb").read())])
+
+        sess.run(tf.global_variables_initializer())
+
+        image = fn_load_image(image_path)
+
+        predictions = \
+            sess.run(model.predictions,
+                     feed_dict={model.input: image})
+
+        sfw_score = predictions[0][0]
+
+        if sfw_score > 0.94:
+            return "sfw"
+        else:
+            return "nsfw"
+
+        print("\tSFW score:\t{}".format(predictions[0][0]))
+        print("\tNSFW score:\t{}".format(predictions[0][1]))
 
 
 def predict_nsfw(image_path):
