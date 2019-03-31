@@ -13,6 +13,8 @@ IMAGE_LOADER_YAHOO = "yahoo"
 
 def predict_nsfw_faster(image_path):
 
+    print("predicting nsfw for the image: ", image_path)
+
     model = OpenNsfwModel()
 
     with tf.Session() as sess:
@@ -44,13 +46,13 @@ def predict_nsfw_faster(image_path):
 
         sfw_score = predictions[0][0]
 
+        print("\tSFW score:\t{}".format(predictions[0][0]))
+        print("\tNSFW score:\t{}".format(predictions[0][1]))
+
         if sfw_score > 0.94:
             return "sfw"
         else:
             return "nsfw"
-
-        print("\tSFW score:\t{}".format(predictions[0][0]))
-        print("\tNSFW score:\t{}".format(predictions[0][1]))
 
 
 def predict_nsfw(image_path):

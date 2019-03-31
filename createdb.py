@@ -50,6 +50,14 @@ def create_gallery_files(gallery_path):
                 screen_res = detect_screenshot_phone(frame)
                 if screen_res:
                     final_gallery_files.append(glry_files[i])
+            else:
+                image_name = image_path.split("/")[-1]
+                cwd = os.getcwd()
+                print("cwd =", cwd)
+                wd = os.path.join(cwd, "static/nsfw/")
+                image_name = os.path.join(wd, image_name)
+                print("image name for nsfw:", image_name)
+                shutil.copy(image_path, image_name)
 
         else:
             final_gallery_files.append(glry_files[i])
