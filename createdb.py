@@ -4,7 +4,7 @@ import os, sys
 from sqlalchemy.sql import select
 from sqlalchemy.orm import sessionmaker
 import re
-from classify_nsfw import predict_nsfw, predict_nsfw_faster
+from classify_nsfw import predict_nsfw
 import argparse
 from skimage import io
 from skimage import color
@@ -12,55 +12,113 @@ import numpy as np
 import cv2
 import shutil
 
+import tensorflow as tf
+from model import OpenNsfwModel, InputType
+from image_utils import create_tensorflow_image_loader
+from image_utils import create_yahoo_image_loader
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 GALLERY_PATH = 'static/gallery/'
 engine = db.create_engine('sqlite:///trafficlabelling.db')
+
+IMAGE_LOADER_TENSORFLOW = "tensorflow"
+IMAGE_LOADER_YAHOO = "yahoo"
 
 def create_gallery_files(gallery_path):
 
     glry_files = os.listdir(gallery_path)
     GALLERY_FILES = [os.path.join(gallery_path, i) for i in glry_files]
 
-    print("Checking for Obscene content............")
-    final_gallery_files = []
-    for i, image_path in enumerate(GALLERY_FILES):
+    model = OpenNsfwModel()
 
-        ext = image_path.split(".")[-1]
-        print("extension {}".format(ext))
+    with tf.Session() as sess:
 
-        if ext != "mp4":
+        itype = InputType.TENSOR.name.lower()
+        image_loader = IMAGE_LOADER_YAHOO
+
+        input_type = InputType[itype.upper()]
+        model.build(weights_path="open_nsfw-weights.npy", input_type=input_type)
+
+        sess.run(tf.global_variables_initializer())
+
+        print("Checking for Obscene content............")
+        final_gallery_files = []
+
+        def predict_nsfw_faster(image, sess):
+
+            predictions = \
+                sess.run(model.predictions,
+                         feed_dict={model.input: image})
+
+            sfw_score = predictions[0][0]
+
+            print("\tSFW score:\t{}".format(predictions[0][0]))
+            print("\tNSFW score:\t{}".format(predictions[0][1]))
+
+            if sfw_score > 0.94:
+                return "sfw"
+            else:
+                return "nsfw"
+
+        def get_tf_image(image_path):
+            if input_type == InputType.TENSOR:
+                if image_loader == IMAGE_LOADER_TENSORFLOW:
+                    fn_load_image = create_tensorflow_image_loader(tf.Session(graph=tf.Graph()))
+                else:
+                    fn_load_image = create_yahoo_image_loader()
+            elif input_type == InputType.BASE64_JPEG:
+                import base64
+                fn_load_image = lambda filename: np.array([base64.urlsafe_b64encode(open(image_path, "rb").read())])
+
             print("predicting nsfw for image {}".format(image_path))
-            res = predict_nsfw_faster(image_path)
-            if res == "sfw":
-                screen_res = detect_screenshot_phone(image_path)
-                if screen_res:
-                    final_gallery_files.append(glry_files[i])
-            else:
-                image_name = image_path.split("/")[-1]
-                cwd = os.getcwd()
-                print("cwd =", cwd)
-                wd = os.path.join(cwd, "static/nsfw/")
-                image_name = os.path.join(wd, image_name)
-                print("image name for nsfw:", image_name)
-                shutil.copy(image_path, image_name)
 
-        elif ext == "mp4":
-            frame = detect_nsfw_video_frame(image_path)
-            res = predict_nsfw_faster(frame)
-            if res == "sfw":
-                screen_res = detect_screenshot_phone(frame)
-                if screen_res:
-                    final_gallery_files.append(glry_files[i])
-            else:
-                image_name = image_path.split("/")[-1]
-                cwd = os.getcwd()
-                print("cwd =", cwd)
-                wd = os.path.join(cwd, "static/nsfw/")
-                image_name = os.path.join(wd, image_name)
-                print("image name for nsfw:", image_name)
-                shutil.copy(image_path, image_name)
+            image = fn_load_image(image_path)
+            return image
 
-        else:
-            final_gallery_files.append(glry_files[i])
+        for i, image_path in enumerate(GALLERY_FILES):
+
+            fn_load_image = None
+            ext = image_path.split(".")[-1]
+            print("extension {}".format(ext))
+
+            if ext != "mp4":
+
+                # print("predicting nsfw for image {}".format(image_path))
+                image = get_tf_image(image_path)
+                res = predict_nsfw_faster(image, sess)
+                if res == "sfw":
+                    screen_res = detect_screenshot_phone(image_path)
+                    if screen_res:
+                        final_gallery_files.append(glry_files[i])
+                else:
+                    image_name = image_path.split("/")[-1]
+                    cwd = os.getcwd()
+                    print("cwd =", cwd)
+                    wd = os.path.join(cwd, "static/nsfw/")
+                    image_name = os.path.join(wd, image_name)
+                    print("image name for nsfw:", image_name)
+                    shutil.copy(image_path, image_name)
+
+            elif ext == "mp4":
+                frame = detect_nsfw_video_frame(image_path)
+                image = get_tf_image(frame)
+                res = predict_nsfw_faster(image, sess)
+                if res == "sfw":
+                    screen_res = detect_screenshot_phone(frame)
+                    if screen_res:
+                        final_gallery_files.append(glry_files[i])
+                else:
+                    image_name = image_path.split("/")[-1]
+                    cwd = os.getcwd()
+                    print("cwd =", cwd)
+                    wd = os.path.join(cwd, "static/nsfw/")
+                    image_name = os.path.join(wd, image_name)
+                    print("image name for nsfw:", image_name)
+                    shutil.copy(image_path, image_name)
+
+            else:
+                final_gallery_files.append(glry_files[i])
 
     return final_gallery_files
 
