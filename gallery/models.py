@@ -51,6 +51,8 @@ class FilesystemObject(object):
     def all(cls, user_id):
         """Return a list of files contained in the directory pointed by settings.GALLERY_ROOT_DIR.
         """
+        images_list = []
+        videos_list = []
         images_list, videos_list = get_image_filepaths(user_id)
         print(images_list, videos_list)
         images = [cls(x) for x in images_list]

@@ -44,6 +44,11 @@ def logout():
     session['logged_in'] = False
     return render_template("logout.html")
 
+@app.route("/next")
+def next():
+    session['logged_in'] = True
+    return redirect(url_for('gallery.show_gallery'))
+
 
 @app.route('/login', methods=['POST'])
 def do_admin_login():
@@ -64,6 +69,7 @@ def do_admin_login():
 
 @app.route('/check_selected', methods=['GET', 'POST'])
 def update_selected_image_db():
+    print("going to update the db")
     if request.method == 'GET':
         post = request.args.get('post', 0, type=str)
         opt = request.args.get('x', 0, type=int)

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta http-equiv="refresh" content="60">
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -15,28 +16,17 @@
     });
 });
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-        function myImgFunction(img_name) {
-                $.getJSON($SCRIPT_ROOT + '/check_selected', {
-                <!--x : $('input[name="value"]').val(),-->
-                x : $( "input[type=radio][name=options]:checked" ).val(),
-                <!--x = element.parentNode.elements["options"].values-->
-                post: img_name
-                }, function(data){
-                console.log("Working");
-            });
-        }
-
-        function myOptionFunction(element,img_name){
-
-        console.log(element.parentNode.elements["options"].value);
-        <!--var x = element.parentNode.parentNode.parentNode.children;-->
-        <!--var y = document.getElementById('img_container');-->
-        <!--var myimg = y.getElementsByTagName('img')[0];-->
-        <!--var mysrc = myimg.src;-->
-
-        console.log(img_name);
-        <!--console.log(x);-->
-        }
+    function myOptionFunction(img_name) {
+    $.getJSON($SCRIPT_ROOT + '/check_selected', {
+    x : $( "input[type=radio][name=options]:checked" ).val(),
+    <!--x : $(event.target.id),-->
+    post: img_name
+    <!--post : $(event.target.value)-->
+    }, function(data){
+    console.log("Working");
+    location.reload();
+    });
+    }
     </script>
 </head>
     <body>
@@ -271,36 +261,40 @@
 
                         <h5 class="clrd-font">VIOLATION TYPE</h5>
                         <form name="myForm" action="" method="post" onsubmit="">
-                        <label class="contain">No violation
-                            <input type="radio" name="options" id="{{video.filename}}" value="1">
-                          <span class="checkmark"></span>
-                        </label>
+                    <label class="contain">No violation
+                        <input type="radio" name="options" id="{{video.filename}}" value="1"
+                               onclick='myOptionFunction("{{video.filename}}")'>
+                        <span class="checkmark"></span>
+                    </label>
 
-                        <label class="contain" >Wrong Parking
-                            <input type="radio" name="options" id="{{video.filename}}" value="2">
-                          <span class="checkmark"></span>
-                        </label>
+                    <label class="contain">Wrong Parking
+                        <input type="radio" name="options" id="{{video.filename}}" value="2"
+                               onclick='myOptionFunction("{{video.filename}}")'>
+                        <span class="checkmark"></span>
+                    </label>
 
-                        <label class="contain" >Blocked Parking
-                            <input type="radio" name="options" id="{{video.filename}}" value="3">
-                          <span class="checkmark"></span>
-                        </label>
+                    <label class="contain">Blocked Parking
+                        <input type="radio" name="options" id="{{video.filename}}" value="3"
+                               onclick='myOptionFunction("{{video.filename}}")'>
+                        <span class="checkmark"></span>
+                    </label>
 
-                        <label class="contain">Merging from wrong lane
-                            <input type="radio" name="options" id="{{video.filename}}" value="4">
-                          <span class="checkmark"></span>
-                        </label>
+                    <label class="contain">Merging from wrong lane
+                        <input type="radio" name="options" id="{{video.filename}}" value="4"
+                               onclick='myOptionFunction("{{video.filename}}")'>
+                        <span class="checkmark"></span>
+                    </label>
 
-                        <label class="contain">Driving over median
-                            <input type="radio" name="options" id="{{video.filename}}" value="5">
-                          <span class="checkmark"></span>
-                        </label>
-                        <label class="contain">Others
-                            <input type="radio" name="options" id="{{video.filename}}" value="6">
-                          <span class="checkmark"></span>
-                        </label>
-                        <button  onclick='myImgFunction("{{video.filename}}")' type="submit" class="btn btn-default">Go</button>
-
+                    <label class="contain">Driving over median
+                        <input type="radio" name="options" id="{{video.filename}}" value="5"
+                               onclick='myOptionFunction("{{video.filename}}")'>
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="contain">Others
+                        <input type="radio" name="options" id="{{video.filename}}" value="6"
+                               onclick='myOptionFunction("{{video.filename}}")'>
+                        <span class="checkmark"></span>
+                    </label>
 </form>
                     </div>
             </div>
@@ -309,7 +303,7 @@
 
     </div>
     <a href="{{ url_for('logout') }}" class="logout">&laquo; LOGOUT </a>
-    <a href="#" class="next">NEXT &raquo;</a>
+    <a href="{{ url_for('next') }}" class="next">NEXT &raquo;</a>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

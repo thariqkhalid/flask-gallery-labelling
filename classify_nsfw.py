@@ -20,7 +20,7 @@ def predict_nsfw_faster(image_path):
     with tf.Session() as sess:
 
         itype = InputType.TENSOR.name.lower()
-        image_loader = IMAGE_LOADER_YAHOO
+        image_loader = IMAGE_LOADER_TENSORFLOW
 
         input_type = InputType[itype.upper()]
         model.build(weights_path="open_nsfw-weights.npy", input_type=input_type)

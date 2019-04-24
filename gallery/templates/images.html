@@ -16,6 +16,7 @@
     closeEffect: "none"
     });
     });
+
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
     function myOptionFunction(img_name) {
     $.getJSON($SCRIPT_ROOT + '/check_selected', {
@@ -364,7 +365,7 @@
 
 </div>
 <a href="{{ url_for('logout') }}" class="logout">&laquo; LOGOUT </a>
-<a href="#" class="next">NEXT &raquo;</a>
+<a href="{{ url_for('next') }}" class="next">NEXT &raquo;</a>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

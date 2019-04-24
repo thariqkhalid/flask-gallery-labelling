@@ -3,6 +3,7 @@ from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
 import os, sys
 from sqlalchemy.sql import select
 from sqlalchemy.orm import sessionmaker
+from  sqlalchemy.sql.expression import func
 import re
 from classify_nsfw import predict_nsfw
 import argparse
@@ -224,12 +225,42 @@ def get_connection():
 
 def get_image_filepaths(user_id):
     connection, traffic = get_connection()
-    s = select([traffic])
+    user_id = int(re.search('\d+', user_id).group(0))
+    ITEM_LIMIT = 4
+
+    print("getting the image files for user_id: ",user_id)
+
+    # if user_id == 1:
+    #     print("user1")
+    #     select_statement = select([traffic]).where(traffic.c.user1 == "NULL")#.limit(ITEM_LIMIT)
+    # if user_id == 2:
+    #     print("user2")
+    #     select_statement = select([traffic]).where(traffic.c.user2 == "NULL")#.limit(ITEM_LIMIT)
+    # if user_id == 3:
+    #     print("user3")
+    #     select_statement = select([traffic]).where(traffic.c.user3 == "NULL")#.limit(ITEM_LIMIT)
+    # if user_id == 4:
+    #     select_statement = select([traffic]).where(traffic.c.user4 is None).limit(ITEM_LIMIT)
+    # if user_id == 5:
+    #     select_statement = select([traffic]).where(traffic.c.user5 is None).limit(ITEM_LIMIT)
+    # if user_id == 6:
+    #     select_statement = select([traffic]).where(traffic.c.user6 is None).limit(ITEM_LIMIT)
+    # if user_id == 7:
+    #     select_statement = select([traffic]).where(traffic.c.user7 is None).limit(ITEM_LIMIT)
+    # if user_id == 8:
+    #     select_statement = select([traffic]).where(traffic.c.user8 is None).limit(ITEM_LIMIT)
+    # if user_id == 9:
+    #     select_statement = select([traffic]).where(traffic.c.user9 is None).limit(ITEM_LIMIT)
+    # if user_id == 10:
+    #     select_statement = select([traffic]).where(traffic.c.user10 is None).limit(ITEM_LIMIT)
+
+    s = select([traffic]).order_by(func.random()).limit(20)
     result = connection.execute(s)
     imgs = []
     vds = []
     for row in result:
-        if row[user_id] is None:
+        print(row)
+        if row[user_id+1] is None:
             ext = row[1].split(".")[1]
             if ext == "jpeg" or ext == "jpg" or ext == "png":
                 imgs.append(row[1])
@@ -237,12 +268,16 @@ def get_image_filepaths(user_id):
                 vds.append(row[1])
                 print("Videos present \n")
 
+    result.close()
+
     return imgs, vds
 
 
 def update_img_label(img_filename, label_value=1, user_id=0):
     connection, traffic = get_connection()
     user_id = int(re.search('\d+', user_id).group(0))
+
+    print("While updating the image label: ",user_id)
 
     if user_id == 1:
         update_statement = traffic.update().where(traffic.c.filename == img_filename).values(user1=label_value)
@@ -266,6 +301,7 @@ def update_img_label(img_filename, label_value=1, user_id=0):
         update_statement = traffic.update().where(traffic.c.filename == img_filename).values(user10=label_value)
 
     connection.execute(update_statement)
+    connection.close()
 
 
 def get_usernames_passwords():
