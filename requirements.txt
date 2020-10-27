@@ -146,7 +146,7 @@ configparser==3.5.0
 console-progressbar==1.1.1
 constantly==15.1.0
 contextlib2==0.5.5
-cryptography==2.5
+cryptography==3.2
 cycler==0.10.0
 Cython==0.28.5
 cytoolz==0.9.0.1
