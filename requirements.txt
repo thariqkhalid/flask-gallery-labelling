@@ -15,7 +15,7 @@ MarkupSafe==1.1.0
 mkl-fft==1.0.10
 mkl-random==1.0.2
 numpy==1.15.4
-protobuf==3.6.1
+protobuf==3.18.3
 scipy==1.2.0
 simplejson==3.0.7
 six==1.12.0
@@ -75,7 +75,7 @@ pickleshare==0.7.5
 Pillow==5.4.1
 prometheus-client==0.5.0
 prompt-toolkit==2.0.8
-protobuf==3.6.1
+protobuf==3.18.3
 ptyprocess==0.6.0
 Pygments==2.3.1
 pyparsing==2.3.1
@@ -254,7 +254,7 @@ pluggy==0.7.1
 ply==3.11
 prometheus-client==0.3.1
 prompt-toolkit==1.0.15
-protobuf==3.6.1
+protobuf==3.18.3
 psutil==5.4.7
 ptyprocess==0.6.0
 py==1.6.0
